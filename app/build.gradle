@@ -1,0 +1,82 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "com.ehaohai.emergency"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0.1"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+    }
+
+    //签名
+    signingConfigs {
+        debugConfig {
+            storeFile file("../iot.jks")      //签名文件
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"  //签名密码
+        }
+        release {
+            storeFile file("../iot.jks")      //签名文件
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"  //签名密码
+        }
+    }
+    flavorDimensions "app"
+    productFlavors {
+        baseVersion {
+            dimension 'app'
+            applicationId "com.ehaohai.emergency"//包名
+            //resValue "string", "app_name", "青岛市应急管理系统"   // 设置默认的app_name
+            manifestPlaceholders = [
+                    APP_ICON: "@mipmap/ic_launcher",//app图标
+                    CHANNEL_NAME: "baseVersion",
+                    APP_NAME: "青岛市应急管理系统",
+                    AUTHORITIES: "com.ehaohai.emergency.fileprovider",
+            ]
+            //buildConfigField("String", "loginUrl", "\"http://101.132.176.54:8080/workOrder/login\"")//登录
+        }
+    }
+
+    buildTypes {
+        release {
+            shrinkResources false
+            minifyEnabled false
+            signingConfig signingConfigs.release //解决unsigned
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
